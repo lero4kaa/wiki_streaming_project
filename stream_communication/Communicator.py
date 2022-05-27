@@ -1,3 +1,5 @@
+import ast
+import json
 import datetime
 
 
@@ -17,6 +19,8 @@ class Communicator:
         :param message: raw dictionary with all the data from wiki message
         :return: None
         """
+        message["id"] = ast.literal_eval(message["id"])
+        message["data"] = json.loads(message["data"])
         try:
             date_time = datetime.datetime.fromtimestamp(message["id"][0]["timestamp"] / 1000)
             processed_message = {
@@ -29,7 +33,6 @@ class Communicator:
                 "page_title": message["data"]["page_title"],
                 "page_id": message["data"]["page_id"]
             }
-            print(processed_message)
             self.write_into_cassandra(processed_message)
             self.write_into_spark(processed_message)
         except KeyError:
