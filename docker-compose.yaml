@@ -40,6 +40,26 @@ services:
       - SPARK_LOCAL_STORAGE_ENCRYPTION_ENABLED=no
       - SPARK_SSL_ENABLED=no
 
+  communicator:
+    build: stream_communication
+    networks:
+      - wiki-network
+    depends_on:
+      - spark
+      - spark-worker
+      - cassandra-node1
+      - cassandra-node2
+      - cassandra-node3
+#    volumes:
+#      - ./loader.py:/usr/src/loader.py:ro
+#      - ./${DATASET}.tsv:/usr/src/data.tsv:ro
+#      - ./common:/usr/src/common
+#    environment:
+#      - C_NODE=node
+#      - C_PORT=9042
+#      - C_KEYSPACE=l_04
+#    command: [ "data.tsv" ]
+
 
 networks:
   wiki-network:
