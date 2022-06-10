@@ -61,6 +61,7 @@ CREATE TABLE category_a
     user_id int,
     page_title text,
     page_id int,
-    PRIMARY KEY ((datetime), user_id, page_id)
+    message_id text,
+    PRIMARY KEY ((datetime), message_id)
 );
 

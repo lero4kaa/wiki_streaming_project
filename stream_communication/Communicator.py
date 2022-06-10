@@ -25,7 +25,7 @@ class Communicator:
         try:
             date_time = datetime.datetime.fromtimestamp(message["id"][0]["timestamp"] / 1000)
             processed_message = {
-                "datetime": date_time.strftime("%Y-%m-%d %H:%M"),
+                "datetime": date_time.strftime("%Y-%m-%d %H:00"),
                 "day": date_time.day,
                 "hour": date_time.hour,
                 "domain": message["data"]["meta"]["domain"],
@@ -33,7 +33,8 @@ class Communicator:
                 "user_name": message["data"]["performer"]["user_text"],
                 "user_id": message["data"]["performer"]["user_id"],
                 "page_title": message["data"]["page_title"],
-                "page_id": message["data"]["page_id"]
+                "page_id": message["data"]["page_id"],
+                "message_id": message["data"]["meta"]["id"]
             }
             self.write_into_cassandra(processed_message)
         except KeyError:
@@ -59,8 +60,8 @@ class Communicator:
                    f"INSERT INTO user_pages_by_hour (hour, user_id, user_name, page_id) VALUES "
                    f"({message['hour']}, '{message['user_id']}', '{message['user_name']}', '{message['page_id']}');",
 
-                   f"INSERT INTO category_a (datetime, domain, user_is_bot, user_name, user_id, page_title, page_id)"
-                   f"VALUES ('{message['datetime']}', '{message['domain']}', {message['user_is_bot']}, '{message['user_name']}', {message['user_id']}, '{message['page_title']}', {message['page_id']});"]
+                   f"INSERT INTO category_a (datetime, domain, user_is_bot, user_name, user_id, page_title, page_id, message_id)"
+                   f"VALUES ('{message['datetime']}', '{message['domain']}', {message['user_is_bot']}, '{message['user_name']}', {message['user_id']}, '{message['page_title']}', {message['page_id']}, '{message['message_id']}');"]
 
         for query in queries:
             try:

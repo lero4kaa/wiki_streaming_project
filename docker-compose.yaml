@@ -21,8 +21,6 @@ services:
       - "MAX_HEAP_SIZE=256M"
       - "HEAP_NEWSIZE=128M"
     restart: always
-#    volumes:
-#      - ./out/cassandra_data:/var/lib/cassandra
     healthcheck:
       test: [ "CMD", "cqlsh", "-u cassandra", "-p cassandra" ,"-e describe keyspaces" ]
       interval: 15s
@@ -42,6 +40,25 @@ services:
     command: /bin/bash -c "echo loading cassandra keyspace && cqlsh cassandra -f /schema.cql"
     networks:
       - wiki-network
+
+  web-app:
+    build: .
+    command: python ./webapp/app.py
+    ports:
+      - "5000:5000"
+    volumes:
+      - .:/app
+    expose:
+      - "5000"
+    depends_on:
+      - communicator
+    networks:
+      - wiki-network
+    healthcheck:
+      test: curl --fail http://localhost:5000/ || exit 1
+      interval: 60s
+      retries: 5
+      timeout: 10s
 
   #  spark:
   #    image: docker.io/bitnami/spark:3
