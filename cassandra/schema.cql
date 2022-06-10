@@ -51,3 +51,13 @@ CREATE TABLE user_pages_by_hour
 );
 
 
+-- Data for category a
+CREATE TABLE IF NOT EXISTS category_a (datetime timestamp, 
+                               domain text, 
+                               user_is_bot boolean,
+                               user_name text,
+                               user_id int,
+                               page_title text,
+                               page_id int,
+                               PRIMARY KEY (datetime));
+
