@@ -8,7 +8,7 @@
 
 <body>
 
-<section class="section">
+<section>
     <div class="columns">
         <div class="column">
         </div>
@@ -27,8 +27,193 @@
 
 
 <section>
+    <div class="columns">
+        <div class="column is-1">
 
+        </div>
+        <div class="column">
+            <form id="1" action="{{ url_for('answer')}}" method="post">
+
+                <article class="panel is-info">
+                    <p class="panel-heading">
+                        Category A:
+                    </p>
+
+                    <!--                    A 1-->
+                    <div class="panel-block">
+                        <div class="field">
+                            <label class="label">{{questions.category_a_1}}</label>
+                            <p class="control">
+                                <button class="button is-fullwidth is-info" type="submit"
+                                        name="return" value="category_a_1">
+                                    Return
+                                </button>
+                            </p>
+                        </div>
+                    </div>
+                    <!--                    A 2-->
+                    <div class="panel-block">
+                        <div class="field">
+                            <label class="label">{{questions.category_a_2}}</label>
+                            <p class="control">
+                                <button class="button is-fullwidth is-info" type="submit"
+                                        name="return" value="category_a_2">
+                                    Return
+                                </button>
+                            </p>
+                        </div>
+                    </div>
+                    <!--                    A 3-->
+                    <div class="panel-block">
+                        <div class="field">
+                            <label class="label">{{questions.category_a_3}}</label>
+                            <p class="control">
+                                <button class="button is-fullwidth is-info" type="submit"
+                                        name="return" value="category_a_3">
+                                    Return
+                                </button>
+                            </p>
+                        </div>
+                    </div>
+                </article>
+            </form>
+
+        </div>
+
+        <div class="column is-1">
+
+        </div>
+
+        <div class="column">
+            <form id="2" action="{{ url_for('answer')}}" method="post">
+
+                <article class="panel is-warning">
+                    <p class="panel-heading">
+                        Category B:
+                    </p>
+
+                    <!--                B 1-->
+                    <div class="panel-block">
+                        <div class="field">
+                            <label class="label">{{questions.category_b_1}}
+                            </label>
+                            <p class="control">
+                                <button class="button is-fullwidth is-warning" type="submit"
+                                        name="return" value="category_b_1">
+                                    Return
+                                </button>
+                            </p>
+                        </div>
+                    </div>
+                    <!--                B 2-->
+                    <div class="panel-block">
+                        <div class="field">
+                            <label class="label">{{questions.category_b_2}}
+                            </label>
+                            <div class="control">
+                                <div class="columns">
+                                    <div class="column">
+                                        <input class="input" type="text" id="category_b_2" name="category_b_2"
+                                               placeholder="Input user_id here">
+                                    </div>
+                                    <div class="column">
+                                        <p class="control">
+                                            <button class="button is-fullwidth is-warning" type="submit"
+                                                    name="return" value="category_b_2">
+                                                Return
+                                            </button>
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!--                B 3-->
+                    <div class="panel-block">
+                        <div class="field">
+                            <label class="label">{{questions.category_b_3}}
+                            </label>
+                            <div class="control">
+                                <div class="columns">
+                                    <div class="column">
+                                        <input class="input" type="text" id="category_b_3" name="category_b_3"
+                                               placeholder="Input domain here">
+                                    </div>
+                                    <div class="column">
+                                        <p class="control">
+                                            <button class="button is-fullwidth is-warning" type="submit"
+                                                    name="return" value="category_b_3">
+                                                Return
+                                            </button>
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!--                B 4-->
+                    <div class="panel-block">
+                        <div class="field">
+                            <label class="label">{{questions.category_b_4}}
+                            </label>
+                            <div class="control">
+                                <div class="columns">
+                                    <div class="column">
+                                        <input class="input is-fullwidth" type="text" id="category_b_4" name="category_b_4"
+                                               placeholder="Input page_id here">
+                                    </div>
+                                    <div class="column">
+                                        <p class="control">
+                                            <button class="button is-fullwidth is-warning" type="submit"
+                                                    name="return" value="category_b_4">
+                                                Return
+                                            </button>
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!--                B 5-->
+                    <div class="panel-block">
+                        <div class="field">
+                            <label class="label">{{questions.category_b_5}}
+                            </label>
+                            <div class="control">
+                                <div class="columns">
+                                    <div class="column">
+                                        <div class="select is-fullwidth">
+                                            <select class="input" id="category_b_5" name="category_b_5">
+                                                {% for time in range(24) %}
+                                                <option>{{time}}:00 - {{time+1}}:00</option>
+                                                {% endfor %}
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="column">
+                                        <p class="control">
+                                            <button class="button is-fullwidth is-warning" type="submit"
+                                                    name="return" value="category_b_5">
+                                                Return
+                                            </button>
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </article>
+            </form>
+
+        </div>
+
+        <div class="column  is-1">
+
+        </div>
+    </div>
 </section>
+
 
 </body>
 

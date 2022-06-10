@@ -8,7 +8,7 @@
 
 <body>
 
-<section class="section">
+<section>
     <div class="columns">
         <div class="column">
         </div>
@@ -26,14 +26,33 @@
 </section>
 
 
-<section class="section">
+<section>
     <div class="columns">
         <div class="column is-1">
         </div>
         <div class="column">
             <section class="section">
                 <h2 class="title is-4">{{question}}</h2>
-                <p class="textarea">{{api_answer}}</p>
+
+                <table class="table is-bordered is-striped is-hoverable is-fullwidth">
+                    <thead>
+                    <tr>
+                        {% for title in api_answer[0] %}
+                        <th>{{title}}</th>
+                        {% endfor %}
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for result_list in api_answer[1] %}
+                    <tr>
+                        {% for result in  result_list%}
+                        <td>{{result}}</td>
+                        {% endfor %}
+                    </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+
             </section>
         </div>
         <div class="column is-1">
