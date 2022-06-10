@@ -25,3 +25,5 @@ if __name__ == "__main__":
             if message_dictionary["id"] and message_dictionary["data"]:
                 communicator.process_and_send(message_dictionary)
                 message_dictionary = {"id": None, "data": None}
+
+    communicator.close()

@@ -50,3 +50,7 @@ INSERT INTO user_pages_by_hour (hour, user_id, user_name, page_id)
 VALUES (11, '100', 'user', '6');
 
 select user_id, user_name, count(page_id) from user_pages_by_hour where hour=10 group by user_id;
+
+
+INSERT INTO category_a (datetime, domain, user_is_bot, user_name, user_id, page_title, page_id)
+VALUES ('2022-09-01', 'fr', true, 'test', 1234, 'ytest', 1234);

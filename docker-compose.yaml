@@ -1,4 +1,4 @@
-version: '2'
+version: '3.7'
 
 services:
   communicator:
@@ -7,7 +7,8 @@ services:
     networks:
       - wiki-network
     depends_on:
-      - cassandra-load-keyspace
+      cassandra-load-keyspace:
+        condition: service_completed_successfully
 
   cassandra:
     image: cassandra:3.11.2
@@ -20,8 +21,8 @@ services:
       - "MAX_HEAP_SIZE=256M"
       - "HEAP_NEWSIZE=128M"
     restart: always
-    volumes:
-      - ./out/cassandra_data:/var/lib/cassandra
+#    volumes:
+#      - ./out/cassandra_data:/var/lib/cassandra
     healthcheck:
       test: [ "CMD", "cqlsh", "-u cassandra", "-p cassandra" ,"-e describe keyspaces" ]
       interval: 15s
