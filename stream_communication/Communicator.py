@@ -22,6 +22,11 @@ class Communicator:
         """
         message["id"] = ast.literal_eval(message["id"])
         message["data"] = json.loads(message["data"])
+
+        if message["data"]["meta"]["domain"].startswith("ru"):
+            # skipping the message
+            return
+
         try:
             date_time = datetime.datetime.fromtimestamp(message["id"][0]["timestamp"] / 1000)
             processed_message = {
@@ -38,7 +43,7 @@ class Communicator:
             }
             self.write_into_cassandra(processed_message)
         except KeyError:
-            pass
+            return
 
     @staticmethod
     def connect_to_cassandra():
