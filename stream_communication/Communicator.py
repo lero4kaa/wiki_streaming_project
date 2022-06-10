@@ -10,7 +10,6 @@ class Communicator:
 
     def __init__(self):
         # TODO: connection to Cassandra
-        # TODO: connection to Spark
         pass
 
     def process_and_send(self, message):
@@ -34,7 +33,7 @@ class Communicator:
                 "page_id": message["data"]["page_id"]
             }
             self.write_into_cassandra(processed_message)
-            self.write_into_spark(processed_message)
+            # self.write_into_spark(processed_message)
         except KeyError:
             pass
 
@@ -46,10 +45,10 @@ class Communicator:
         # TODO
         pass
 
-    def connect_to_spark(self):
-        # TODO
-        pass
-
-    def write_into_spark(self, message):
-        # TODO
-        pass
+    # def connect_to_spark(self):
+    #     # TODO
+    #     pass
+    #
+    # def write_into_spark(self, message):
+    #     # TODO
+    #     pass
