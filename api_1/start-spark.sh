@@ -1,0 +1,2 @@
+docker build -t spark-processing-image -f ./Dockerfile-spark .
+docker run -it --name spark-processor --network wiki-network --rm -v /home/valeriia/big_data_course/project/wiki_streaming_project/api_1:/api_1 spark-processing-image
