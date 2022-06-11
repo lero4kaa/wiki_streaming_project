@@ -1,5 +1,6 @@
 from http import client
 import json
+import os
 from sqlite3 import connect
 from  pyspark.sql.functions import input_file_name, count, desc, col
 from pyspark.sql import SQLContext
@@ -35,7 +36,7 @@ class SparkProcessor():
         query = f"SELECT * FROM category_a WHERE datetime='{request_hour}'"
         rows = list(self.session.execute(query))
         return rows
-    
+
     def update(self):
         curr_date = datetime.now()
         print(curr_date)
@@ -62,7 +63,7 @@ class SparkProcessor():
                                 .agg(count('message_id').alias('num_messages'))
 
                 dct_statistics = df_statistics.rdd.map(lambda row: {row['domain']: row['num_messages']}).collect()
-            
+
             else:
                 dct_statistics = []
 
@@ -72,12 +73,18 @@ class SparkProcessor():
                         }
 
             final_result.append(hour_result_dict)
-        
+
         print('first request-------------------\n', final_result)
 
-        with open('first_request.json', 'w') as f:
-            f.write(json.dumps(final_result))
-    
+        for result in final_result:
+            if not len(result['statistics']):
+                continue
+            try:
+                stats = str(result['statistics']).replace("'", "")
+                self.session.execute(f"INSERT INTO first_request (time_start, statistics) VALUES ('{result['time_start']}', '{stats}'); ")
+            except:
+                pass
+
     def second_request(self, request_time):
 
         final_result = []
@@ -97,7 +104,7 @@ class SparkProcessor():
                                 .agg(count('message_id').alias('created_by_bots'))
 
                 dct_statistics = df_statistics.rdd.map(lambda row: row.asDict()).collect()
-            
+
             else:
                 dct_statistics = []
 
@@ -107,9 +114,16 @@ class SparkProcessor():
                         }
 
             final_result.append(hour_result_dict)
-        
-        print('second request-------------------\n',final_result)
-    
+
+        for result in final_result:
+            if not len(result['statistics']):
+                continue
+            try:
+                self.session.execute(
+                    f"INSERT INTO second_request (time_start, statistics) VALUES ('{result['time_start']}', '{str(result['statistics'])}'); ")
+            except:
+                pass
+
     # def third_request(self, request_time):
 
     #     final_result = []
@@ -124,8 +138,8 @@ class SparkProcessor():
     #         if records:
     #             df = spark.createDataFrame(records)
 
-                
-            
+
+
     #         else:
     #             continue
 
@@ -135,15 +149,17 @@ class SparkProcessor():
     #                     }
 
     #         final_result.append(hour_result_dict)
-        
+
     #     print(final_result)
-        
-        
+
+
 
 
 
 if __name__ == '__main__':
     print('hello')
+    if not os.path.exists('precomputed_reports'):
+        os.makedirs('precomputed_reports')
     sp = SparkProcessor()
     sp.connect_to_db()
 

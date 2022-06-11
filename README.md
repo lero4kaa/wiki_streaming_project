@@ -3,12 +3,13 @@ Project for Big Data course at Ukrainian Catholic University: processing and pre
 to user.
 
 ## Project architecture
-![](images)
+![](images/arch.png)
 
 ## Instructions:
 ```
 docker-compose build && docker-compose up
 ```
+*Warning: the docker image we use takes a lot of time to be downloaded (from 10 to 30 minutes).*
 
 Connect to the website on [http://0.0.0.0:5000](http://0.0.0.0:5000). (here You will 
 be able to send requests for both types of API sets).
