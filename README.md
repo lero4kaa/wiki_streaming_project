@@ -14,21 +14,18 @@ docker-compose build && docker-compose up
 Connect to the website on [http://0.0.0.0:5000](http://0.0.0.0:5000). (here You will 
 be able to send requests for both types of API sets).
 
+Home interface:
+![interface](images/interface.png)
+
 Finish and clean up:
 ```
 docker-compose down
 ```
 
-## Examples
-Examples (after ~8 hours processing and preparing wiki data):
-![1](images/example1.png)
-![2](images/example2.png)
-![3](images/example3.png)
-![4](images/example4.png)
-![5](images/example5.png)
-![6](images/example6.png)
-![7](images/example7.png)
-![8](images/example8.png)
+## Results
+Full results for each API call are saved as html files in [final results directory](final_results).
+Here are the parameters, which were used for requests from category B:
+![](final_results/parameters_for_category_b.jpg)
 
-Home interface:
-![interface](images/interface.png)
+For request A 3 we had to restart system (due to accidental TypeError when preparing data to be sent to Cassandra T_T),
+so info for this request is available for a smaller time range than all the other info.

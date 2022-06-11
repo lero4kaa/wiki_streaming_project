@@ -152,15 +152,15 @@ class SparkProcessor():
                         'time_end': str((request_time - timedelta(hours=1)).hour) + ':00',
                         'statistics': statistics}
 
-        for result in final_result:
-            if not len(result['statistics']):
-                continue
-            try:
-                stats = str(result['statistics']).replace("'", "")
-                self.session.execute(
-                    f"INSERT INTO third_request (time_start, time_end, statistics) VALUES ('{result['time_start']}', '{result['time_end']}', '{stats}'); ")
-            except:
-                pass
+        result = final_result
+        if not len(result['statistics']):
+            pass
+        try:
+            stats = str(result['statistics']).replace("'", "")
+            self.session.execute(
+                f"INSERT INTO third_request (time_start, time_end, statistics) VALUES ('{result['time_start']}', '{result['time_end']}', '{stats}'); ")
+        except:
+            pass
 
 
 if __name__ == '__main__':

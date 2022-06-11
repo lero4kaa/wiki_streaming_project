@@ -76,7 +76,7 @@ def category_b_api(number, parameter):
         else:
             parameter = parameter.split(":")[0]
             rows = session.execute(
-                f"select user_id, user_name, count(page_id) from user_pages_by_hour where hour={parameter} group by user_id;")
+                f"select user_id, user_name, count(message_id) from user_pages_by_hour where hour={parameter} group by user_id;")
             result = [["User ID", "User Name", "Number of created pages"], []]
             for row in rows:
                 number_of_articles = [i.system_count_page_id for i in session.execute(

@@ -46,8 +46,8 @@ CREATE TABLE user_pages_by_hour
     hour      int,
     user_id   text,
     user_name text,
-    page_id   text,
-    PRIMARY KEY ((hour), user_id, page_id)
+    message_id text,
+    PRIMARY KEY ((hour), user_id, message_id)
 );
 
 

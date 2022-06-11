@@ -62,8 +62,8 @@ class Communicator:
                    f"INSERT INTO pages_by_id (page_id, page_title) "
                    f"VALUES ('{message['page_id']}', '{message['page_title']}');",
 
-                   f"INSERT INTO user_pages_by_hour (hour, user_id, user_name, page_id) VALUES "
-                   f"({message['hour']}, '{message['user_id']}', '{message['user_name']}', '{message['page_id']}');",
+                   f"INSERT INTO user_pages_by_hour (hour, user_id, user_name, message_id) VALUES "
+                   f"({message['hour']}, '{message['user_id']}', '{message['user_name']}', '{message['message_id']}');",
 
                    f"INSERT INTO category_a (datetime, domain, user_is_bot, user_name, user_id, page_title, page_id, message_id)"
                    f"VALUES ('{message['datetime']}', '{message['domain']}', {message['user_is_bot']}, '{message['user_name']}', {message['user_id']}, '{message['page_title']}', {message['page_id']}, '{message['message_id']}');"]
