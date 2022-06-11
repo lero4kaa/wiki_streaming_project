@@ -65,3 +65,24 @@ CREATE TABLE category_a
     PRIMARY KEY ((datetime), message_id)
 );
 
+-- category A results
+CREATE TABLE first_request
+(
+    time_start text,
+    statistics text,
+    PRIMARY KEY ((time_start))
+);
+
+CREATE TABLE second_request
+(
+    time_start text,
+    statistics text,
+    PRIMARY KEY ((time_start))
+);
+
+CREATE TABLE third_request
+(
+    time_start text,
+    statistics text,
+    PRIMARY KEY ((time_start))
+);

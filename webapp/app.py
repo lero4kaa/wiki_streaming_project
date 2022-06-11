@@ -1,3 +1,5 @@
+import os
+
 from cassandra.cluster import Cluster
 from flask import Flask, render_template, request
 
@@ -24,6 +26,17 @@ def home():
     return render_template('home.html', questions=api_questions)
 
 
+@app.route("/test", methods=["GET", "POST"])
+def test():
+    sting = ""
+    directory = 'precomputed_reports'
+    for filename in os.listdir(directory):
+        f = os.path.join(directory, filename)
+        if os.path.isfile(f):
+            sting += str(f)
+    return sting
+
+
 @app.route("/answer", methods=["GET", "POST"])
 def answer(question="Here will be the question", api_answer="Here will be the answer"):
     if request.method == 'POST':
@@ -38,10 +51,27 @@ def answer(question="Here will be the question", api_answer="Here will be the an
 
 
 def category_a_api(number):
+    # TODO
     try:
-        return [api_questions[number], "Sorry!"]
+        if number == "category_a_1":
+            rows = session.execute("select * from ...;")
+            result = [["time_start", "time_end", "statistics"],
+                      [[row.time_start, row.time_end, row.statistics] for row in rows]]
+        elif number == "category_a_2":
+            rows = session.execute("select * from ...;")
+            result = [["time_start", "time_end", "statistics"],
+                      [[row.time_start, row.time_end, row.statistics] for row in rows]]
+        else:
+            rows = session.execute("select * from ...;")
+            result = [["User Name", "User ID", "time_start", "time_end", "Page titles", "Number of pages created"],
+                      [[row.user_name, row.user_id, row.time_start, row.time_end, row.titles, row.number]
+                       for row in rows]]
+
+        if not result[1]:
+            result[1] = [["empty" for i in range(len(result[0]))]]
+        return [api_questions[number], result]
     except:
-        return [api_questions[number], "Sorry! It seems there was some kind of problem during query."]
+        return [api_questions[number], [["Sorry!"], [["It seems there was some kind of problem during query."]]]]
 
 
 def category_b_api(number, parameter):
@@ -73,7 +103,7 @@ def category_b_api(number, parameter):
             result[1] = [["empty" for i in range(len(result[0]))]]
         return [api_questions[number], result]
 
-    except Exception as ex:
+    except:
         return [api_questions[number], [["Sorry!"], [["It seems there was some kind of problem during query."]]]]
 
 
