@@ -1,12 +1,7 @@
 from http import client
 import json
-from sqlite3 import connect
-from  pyspark.sql.functions import input_file_name, count, desc, col
-from pyspark.sql import SQLContext
-from pyspark.sql import DataFrameWriter
+from  pyspark.sql.functions import count, desc, col, collect_list
 from pyspark.sql import SparkSession
-from pyspark import SparkContext
-from pyspark import SparkConf
 
 from cassandra.cluster import Cluster
 from cassandra.query import dict_factory
@@ -18,16 +13,15 @@ spark = SparkSession.builder.appName('WikiProject').getOrCreate()
 
 host = 'cassandra'
 port = 9042
-keyspace = 'wikimedia_data'
+keyspace = 'wiki_project'
 
 NUM_HOURS_FOR_STATISTICS = 6
-
 
 class SparkProcessor():
 
     def connect_to_db(self):
-        self.client = Cluster(["cassandra"], port=9042)
-        self.session = self.client.connect("wiki_project")
+        self.client = Cluster([host], port=port)
+        self.session = self.client.connect(keyspace)
         self.session.row_factory = dict_factory
 
 
@@ -38,17 +32,15 @@ class SparkProcessor():
     
     def update(self):
         curr_date = datetime.now()
-        print(curr_date)
         self.first_request(curr_date)
         self.second_request(curr_date)
-        # self.third_request()
+        self.third_request(curr_date)
 
     def first_request(self, request_time):
 
         final_result = []
 
-        ## EXCLUDE LAST HOUR
-        for i in range(NUM_HOURS_FOR_STATISTICS+1, -1, -1):
+        for i in range(NUM_HOURS_FOR_STATISTICS+1, 1, -1):
 
             cur_request_time = request_time - timedelta(hours=i)
             request_time_str = datetime.strftime(cur_request_time, '%Y-%m-%d %H:00:00')
@@ -73,16 +65,14 @@ class SparkProcessor():
 
             final_result.append(hour_result_dict)
         
-        print('first request-------------------\n', final_result)
 
-        with open('first_request.json', 'w') as f:
-            f.write(json.dumps(final_result))
+
     
     def second_request(self, request_time):
 
         final_result = []
 
-        for i in range(NUM_HOURS_FOR_STATISTICS+1, -1, -1):
+        for i in range(NUM_HOURS_FOR_STATISTICS+1, 1, -1):
 
             cur_request_time = request_time - timedelta(hours=i)
             request_time_str = datetime.strftime(cur_request_time, '%Y-%m-%d %H:00:00')
@@ -108,45 +98,54 @@ class SparkProcessor():
 
             final_result.append(hour_result_dict)
         
-        print('second request-------------------\n',final_result)
+
     
-    # def third_request(self, request_time):
+    def third_request(self, request_time):
 
-    #     final_result = []
+        final_result = []
 
-    #     for i in range(NUM_HOURS_FOR_STATISTICS+1, 1, -1):
+        general_df = None
 
-    #         cur_request_time = request_time - timedelta(hours=i)
-    #         request_time_str = datetime.strftime(cur_request_time, '%Y-%m-%d %H:00:00')
+        for i in range(NUM_HOURS_FOR_STATISTICS+1, 1, -1):
 
-    #         records = self.get_data(request_time_str)
+            cur_request_time = request_time - timedelta(hours=i)
+            request_time_str = datetime.strftime(cur_request_time, '%Y-%m-%d %H:00:00')
 
-    #         if records:
-    #             df = spark.createDataFrame(records)
+            records = self.get_data(request_time_str)
 
-                
-            
-    #         else:
-    #             continue
+            if records:
+                if general_df:
+                    df = spark.createDataFrame(records)
+                    general_df = general_df.union(df)
+                else:
+                    general_df = spark.createDataFrame(records)
+            else:
+                continue
 
-    #         hour_result_dict = {'time_start': str(cur_request_time.hour) + ':00',
-    #                     'time_end': str((cur_request_time + timedelta(hours=1)).hour) + ':00',
-    #                     'statistics': dct_statistics
-    #                     }
-
-    #         final_result.append(hour_result_dict)
+        top_users = general_df.groupby('user_id', 'user_name')\
+                    .agg(count('message_id').alias('num_pages_created'))\
+                    .sort(desc('num_pages_created')).head(20)
         
-    #     print(final_result)
-        
-        
+        top_users_df = spark.createDataFrame(top_users)
 
+        joined_df = top_users_df.alias('top')\
+                .join(general_df.alias('general'), on=['user_id'], how='left')\
+                .groupby('top.user_id', 'top.user_name', 'num_pages_created')\
+                .agg(collect_list('page_title').alias('page_titles'))\
+                .sort(desc('num_pages_created'))
+
+        statistics = joined_df.rdd.map(lambda row: row.asDict()).collect()
+
+        final_result = {'time_start': str((request_time - timedelta(hours=7)).hour) + ':00', 
+                  'time_end': str((request_time - timedelta(hours=1)).hour) + ':00',
+                  'statistics': statistics}
+       
 
 
 if __name__ == '__main__':
-    print('hello')
     sp = SparkProcessor()
     sp.connect_to_db()
 
     scheduler = BlockingScheduler()
-    scheduler.add_job(sp.update, 'interval', minutes=1)
+    scheduler.add_job(sp.update, 'cron', hour='*', minute=12, second=0)
     scheduler.start()
