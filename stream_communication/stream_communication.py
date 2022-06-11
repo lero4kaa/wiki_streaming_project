@@ -1,5 +1,4 @@
 import requests
-# from requests.exceptions import ChunkedEncodingError
 from Communicator import Communicator
 
 if __name__ == "__main__":
@@ -7,8 +6,8 @@ if __name__ == "__main__":
     communicator = Communicator()
 
     while True:
-        try: 
-    # Connect to wiki page-create stream
+        try:
+            # Connect to wiki page-create stream
             wiki_request = requests.get('https://stream.wikimedia.org/v2/stream/page-create', stream=True)
             if wiki_request.encoding is None:
                 wiki_request.encoding = 'utf-8'
@@ -17,7 +16,6 @@ if __name__ == "__main__":
             # We need keys id and data
             message_dictionary = {"id": None, "data": None}
 
-    
             for message in wiki_request.iter_lines(decode_unicode=True):
                 # Write wiki data into Cassandra and Spark data storages
                 if message:
@@ -30,12 +28,11 @@ if __name__ == "__main__":
                     if message_dictionary["id"] and message_dictionary["data"]:
                         communicator.process_and_send(message_dictionary)
                         message_dictionary = {"id": None, "data": None}
-            
+
             break
         except:
-            
+
             print("error and continue")
             continue
-
 
     communicator.close()

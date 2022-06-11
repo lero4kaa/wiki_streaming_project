@@ -69,6 +69,7 @@ CREATE TABLE category_a
 CREATE TABLE first_request
 (
     time_start text,
+    time_end text,
     statistics text,
     PRIMARY KEY ((time_start))
 );
@@ -76,6 +77,7 @@ CREATE TABLE first_request
 CREATE TABLE second_request
 (
     time_start text,
+    time_end text,
     statistics text,
     PRIMARY KEY ((time_start))
 );
@@ -83,6 +85,7 @@ CREATE TABLE second_request
 CREATE TABLE third_request
 (
     time_start text,
+    time_end text,
     statistics text,
     PRIMARY KEY ((time_start))
 );
