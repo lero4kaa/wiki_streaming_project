@@ -177,5 +177,5 @@ if __name__ == '__main__':
     sp.connect_to_db()
 
     scheduler = BlockingScheduler()
-    scheduler.add_job(sp.update, 'cron', hour='*', minute=12, second=0)
+    scheduler.add_job(sp.update, 'cron', hour='*', minute=0, second=0)
     scheduler.start()
